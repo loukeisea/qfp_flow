@@ -33,7 +33,7 @@ workflows:
       - process_data:
           requires:
             - analyst_approval
-    triggers:
-      - pull_request:
-          branches:
-            - main
+    filters:
+      branches:
+        only:
+          - main
