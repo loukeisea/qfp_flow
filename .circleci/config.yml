@@ -1,46 +1,46 @@
 version: 2.1
 
 jobs:
-  data_request:
+  finish_data_request:  # Updated job name
     docker:
       - image: cimg/base:2023.03
     steps:
       - run:
-          name: Data Request
+          name: Finish Data Request  # Updated step display name
           command: echo "Data request completed."
 
-  analyst_approval:
+  get_analyst_sign_off:  # Updated job name
     type: approval
     requires:
-      - data_request
+      - finish_data_request
 
-  process_data:
+  all_done:  # Updated job name
     docker:
       - image: cimg/base:2023.03
     steps:
       - run:
-          name: Process Data
+          name: All Done  # Updated step display name
           command: echo "Processing data..."
 
 workflows:
   version: 2
   data_approval_workflow:
     jobs:
-      - data_request:
+      - finish_data_request:
           filters:
             branches:
               only:
                 - main
-      - analyst_approval:
+      - get_analyst_sign_off:
           requires:
-            - data_request
+            - finish_data_request
           filters:
             branches:
               only:
                 - main
-      - process_data:
+      - all_done:
           requires:
-            - analyst_approval
+            - get_analyst_sign_off
           filters:
             branches:
               only:
