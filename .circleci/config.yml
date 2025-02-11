@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  beginning_the_workflow:  # This runs automatically
+  beginning_the_workflow:
     docker:
       - image: cimg/base:2023.03
     steps:
@@ -9,10 +9,15 @@ jobs:
           name: Beginning the Workflow
           command: echo "Workflow started."
 
-  finish_data_request:  # Now requires approval before running
-    type: approval
+  finish_data_discovery:
+    type: approval  # New approval step before finish_data_request
 
-  get_analyst_sign_off:  # Still requires approval
+  finish_data_request:
+    type: approval  # Requires approval after data discovery
+    requires:
+      - finish_data_discovery
+
+  get_analyst_sign_off:
     type: approval
     requires:
       - finish_data_request
@@ -29,19 +34,26 @@ workflows:
   version: 2
   data_approval_workflow:
     jobs:
-      - beginning_the_workflow:  # Runs automatically
+      - beginning_the_workflow:
           filters:
             branches:
               only:
                 - main
-      - finish_data_request:  # Needs approval before running
+      - finish_data_discovery:  # New approval step
           requires:
             - beginning_the_workflow
           filters:
             branches:
               only:
                 - main
-      - get_analyst_sign_off:  # Still requires approval
+      - finish_data_request:  # Requires finish_data_discovery approval first
+          requires:
+            - finish_data_discovery
+          filters:
+            branches:
+              only:
+                - main
+      - get_analyst_sign_off:
           requires:
             - finish_data_request
           filters:
