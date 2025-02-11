@@ -10,10 +10,10 @@ jobs:
           command: echo "Workflow started."
 
   finish_data_discovery:
-    type: approval  # New approval step before finish_data_request
+    type: approval
 
   finish_data_request:
-    type: approval  # Requires approval after data discovery
+    type: approval
     requires:
       - finish_data_discovery
 
@@ -34,11 +34,11 @@ workflows:
   version: 2
   data_approval_workflow:
     jobs:
-      - beginning_the_workflow:
-      - finish_data_discovery:  # New approval step
+      - beginning_the_workflow
+      - finish_data_discovery:
           requires:
             - beginning_the_workflow
-      - finish_data_request:  # Requires finish_data_discovery approval first
+      - finish_data_request:
           requires:
             - finish_data_discovery
       - get_analyst_sign_off:
