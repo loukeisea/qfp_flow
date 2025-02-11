@@ -26,14 +26,22 @@ workflows:
   version: 2
   data_approval_workflow:
     jobs:
-      - data_request
+      - data_request:
+          filters:
+            branches:
+              only:
+                - main
       - analyst_approval:
           requires:
             - data_request
+          filters:
+            branches:
+              only:
+                - main
       - process_data:
           requires:
             - analyst_approval
-    filters:
-      branches:
-        only:
-          - main
+          filters:
+            branches:
+              only:
+                - main
